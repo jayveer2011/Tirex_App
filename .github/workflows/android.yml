@@ -40,9 +40,8 @@ jobs:
         # Unzip the command line tools into the SDK directory
         unzip $ANDROID_SDK_ROOT/commandlinetools-linux-9477386_latest.zip -d $ANDROID_SDK_ROOT
 
-        # Move cmdline-tools to the expected location
-        mkdir -p $ANDROID_SDK_ROOT/cmdline-tools/latest
-        mv $ANDROID_SDK_ROOT/cmdline-tools/* $ANDROID_SDK_ROOT/cmdline-tools/latest/
+        # Rename extracted folder to 'latest'
+        mv $ANDROID_SDK_ROOT/cmdline-tools $ANDROID_SDK_ROOT/cmdline-tools/latest
 
         # Accept licenses and install necessary SDK packages
         yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses
