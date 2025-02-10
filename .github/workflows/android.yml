@@ -22,7 +22,8 @@ jobs:
     - name: Set up JDK 17
       uses: actions/setup-java@v2
       with:
-        java-version: '17'        # Set to Java 17
+        java-version: '17' 
+        distribution: "openjdk" # Set to Java 17
 
     # Step 3: Set up Android SDK (using sdkmanager command)
     - name: Set up Android SDK
