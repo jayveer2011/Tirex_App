@@ -1,10 +1,9 @@
 name: Build APK
 
-# Trigger the workflow on push or pull request to the main branch
 on:
   push:
     branches:
-      - master  # You can replace "main" with the name of your branch (e.g., "master")
+      - master
   pull_request:
     branches:
       - master
@@ -14,35 +13,46 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Checkout the repository
     - name: Checkout code
       uses: actions/checkout@v2
 
-    # Step 2: Set up JDK 17
-    - name: Set up JDK 17
+    - name: Set up JDK 17 (Temurin)
       uses: actions/setup-java@v2
       with:
-        java-version: '17' 
-        distribution: "temurin" # Set to Java 17
+        java-version: '17'
+        distribution: 'temurin'
 
-    # Step 3: Set up Android SDK (using sdkmanager command)
     - name: Set up Android SDK
       run: |
+        # Install necessary dependencies
         sudo apt update
         sudo apt install -y openjdk-17-jdk wget unzip
-        mkdir -p $HOME/android-sdk
-        wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -P $HOME/android-sdk
-        unzip $HOME/android-sdk/commandlinetools-linux-9477386_latest.zip -d $HOME/android-sdk
-        yes | $HOME/android-sdk/cmdline-tools/bin/sdkmanager --licenses
-        $HOME/android-sdk/cmdline-tools/bin/sdkmanager "platform-tools" "build-tools;30.0.3" "platforms;android-30"
 
-    # Step 4: Gradle Build (using the Gradle Wrapper)
+        # Define SDK path
+        export ANDROID_SDK_ROOT=$HOME/android-sdk
+
+        # Create Android SDK directory
+        mkdir -p $ANDROID_SDK_ROOT
+
+        # Download command line tools (latest version)
+        wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -P $ANDROID_SDK_ROOT
+
+        # Unzip the command line tools into the SDK directory
+        unzip $ANDROID_SDK_ROOT/commandlinetools-linux-9477386_latest.zip -d $ANDROID_SDK_ROOT
+
+        # Move cmdline-tools to the expected location
+        mkdir -p $ANDROID_SDK_ROOT/cmdline-tools/latest
+        mv $ANDROID_SDK_ROOT/cmdline-tools/* $ANDROID_SDK_ROOT/cmdline-tools/latest/
+
+        # Accept licenses and install necessary SDK packages
+        yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses
+        $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager "platform-tools" "build-tools;30.0.3" "platforms;android-30"
+
     - name: Build APK with Gradle
       run: ./gradlew assembleRelease
 
-    # Step 5: Upload APK as an artifact (using actions/upload-artifact@v4)
-    - name: Upload APK
-      uses: actions/upload-artifact@v4  # Use the latest version (v4)
+    - name: Upload APK as an artifact
+      uses: actions/upload-artifact@v4
       with:
         name: app-release
         path: app/build/outputs/apk/release/app-release.apk
