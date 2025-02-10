@@ -23,7 +23,6 @@ jobs:
       uses: actions/setup-java@v2
       with:
         java-version: '17'        # Set to Java 17
-        distribution: 'adoptopenjdk'  # Or you can use other distributions like 'zulu' or 'openjdk'
 
     # Step 3: Set up Android SDK (using sdkmanager command)
     - name: Set up Android SDK
