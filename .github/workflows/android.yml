@@ -4,10 +4,10 @@ name: Build APK
 on:
   push:
     branches:
-      - master  # You can replace "main" with the name of your branch (e.g., "master")
+      - main  # You can replace "main" with the name of your branch (e.g., "master")
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   build:
@@ -18,17 +18,18 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    # Step 2: Set up JDK 11
-    - name: Set up JDK 11
+    # Step 2: Set up JDK 17
+    - name: Set up JDK 17
       uses: actions/setup-java@v2
       with:
-        java-version: '11'
+        java-version: '17'        # Set to Java 17
+        distribution: 'adoptopenjdk'  # Or you can use other distributions like 'zulu' or 'openjdk'
 
     # Step 3: Set up Android SDK (using sdkmanager command)
     - name: Set up Android SDK
       run: |
         sudo apt update
-        sudo apt install -y openjdk-11-jdk wget unzip
+        sudo apt install -y openjdk-17-jdk wget unzip
         mkdir -p $HOME/android-sdk
         wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -P $HOME/android-sdk
         unzip $HOME/android-sdk/commandlinetools-linux-9477386_latest.zip -d $HOME/android-sdk
