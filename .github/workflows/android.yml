@@ -4,10 +4,10 @@ name: Build APK
 on:
   push:
     branches:
-      - main  # You can replace "main" with the name of your branch (e.g., "master")
+      - master  # You can replace "main" with the name of your branch (e.g., "master")
   pull_request:
     branches:
-      - main
+      - master
 
 jobs:
   build:
