@@ -20,5 +20,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Progress_Bar"
-include(":app")
+include(":Progress_Bar/app")
  
