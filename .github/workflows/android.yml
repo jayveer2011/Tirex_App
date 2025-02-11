@@ -21,7 +21,10 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: gradle
+        cache: 'gradle'
+        cache-dependency-path: | # optional
+          sub-project/*.gradle*
+          sub-project/**/gradle-wrapper.properties
 
     - name: Set up Android SDK
       uses: android-actions/setup-android@v2
@@ -29,18 +32,6 @@ jobs:
         api-level: 34
         build-tools: 34.0.0
         target-arch: x86_64
-
-    - name: Cache
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-          !~/.gradle/wrapper/dists/**/gradle*.zip
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
-
       
     - name: Check for gradlew file
       run: |
