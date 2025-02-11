@@ -21,45 +21,28 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
+        cache: 'gradle'
+        cache-dependency-path: | # optional
+          sub-project/*.gradle*
+          sub-project/**/gradle-wrapper.properties
 
     - name: Set up Android SDK
-      run: |
-        # Install necessary dependencies
-        sudo apt update
-        sudo apt install -y openjdk-17-jdk wget unzip
-
-        # Define SDK path
-        export ANDROID_SDK_ROOT=$HOME/android-sdk
-
-        # Create Android SDK directory
-        mkdir -p $ANDROID_SDK_ROOT/cmdline-tools/latest
-
-        # Download command line tools (latest version)
-        wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -P $ANDROID_SDK_ROOT
-
-        # Unzip directly into the 'latest' directory
-        unzip $ANDROID_SDK_ROOT/commandlinetools-linux-9477386_latest.zip -d $ANDROID_SDK_ROOT/cmdline-tools/latest
-        mv $ANDROID_SDK_ROOT/cmdline-tools/latest/cmdline-tools/bin $ANDROID_SDK_ROOT/cmdline-tools/latest/
-        mv $ANDROID_SDK_ROOT/cmdline-tools/latest/cmdline-tools/NOTICE.txt $ANDROID_SDK_ROOT/cmdline-tools/latest/
-        mv $ANDROID_SDK_ROOT/cmdline-tools/latest/cmdline-tools/source.properties $ANDROID_SDK_ROOT/cmdline-tools/latest/
-        mv $ANDROID_SDK_ROOT/cmdline-tools/latest/cmdline-tools/lib $ANDROID_SDK_ROOT/cmdline-tools/latest/
-        rmdir $ANDROID_SDK_ROOT/cmdline-tools/latest/cmdline-tools
-
-        # Accept licenses and install necessary SDK packages
-        yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses
-        $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager "platform-tools" "build-tools;34.0.0" "platforms;android-34"
-
+      uses: android-actions/setup-android@v2
+      with:
+        api-level: 34
+        build-tools: 34.0.0
+        target-arch: x86_64
+      
     - name: Check for gradlew file
       run: |
         ls -alh gradlew  # Check if gradlew exists and is executable
         chmod +x gradlew
 
     - name: Build APK with Gradle
-      run: |
-        ./gradlew assembleDebug --warning-mode all
-      
+      run: ./gradlew assembleDebug --warning-mode all --stacktrace --info
+
     - name: Upload APK as an artifact
       uses: actions/upload-artifact@v4
       with:
-        name: app-release
-        path: app/build/outputs/apk/release/app-release.apk
+        name: Tirex Charger
+        path: app/build/outputs/apk/debug/app-debug.apk
