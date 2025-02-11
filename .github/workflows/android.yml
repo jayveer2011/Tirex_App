@@ -49,12 +49,18 @@ jobs:
         yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses
         $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager "platform-tools" "build-tools;30.0.3" "platforms;android-30"
 
+    - name: Check for gradlew file
+      run: |
+        ls -alh gradlew  # Check if gradlew exists and is executable
+
     - name: Build APK with Gradle
-      run: ./gradlew assembleRelease
-      working-directory: ./
-      
+      run: |
+        ./gradlew assembleRelease
+      working-directory: ./  # Ensure this is the correct directory
+
     - name: Upload APK as an artifact
       uses: actions/upload-artifact@v4
       with:
         name: app-release
+        path: app/build/outputs/apk/release/app-release.apkrelease
         path: app/build/outputs/apk/release/app-release.apk
