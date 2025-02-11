@@ -30,6 +30,18 @@ jobs:
         build-tools: 34.0.0
         target-arch: x86_64
 
+    - name: Cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+          !~/.gradle/wrapper/dists/**/gradle*.zip
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+      
     - name: Check for gradlew file
       run: |
         ls -alh gradlew  # Check if gradlew exists and is executable
